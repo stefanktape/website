@@ -1,0 +1,21 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import ServiceCard from "@components/ServiceCard.astro";
+import KnowledgeCard from "@components/KnowledgeCard.astro";
+import StudyCard from "@components/StudyCard.astro";
+import { company } from "@data/company";
+import { services } from "@data/services";
+import { knowledgeEntries } from "@data/knowledge";
+import { technicalStudies } from "@data/technical-studies";
+const problems = ["Turn application requirements into coating-system criteria", "Compare ceramic feedstocks beyond nominal chemistry", "Connect spray parameters to particle behavior and microstructure", "Screen materials and suppliers on technical fit", "Define evidence, risks, and validation before development begins"];
+const chain = ["Application", "Function", "Architecture", "Material", "Feedstock", "Process", "Particle behavior", "Microstructure", "Properties", "Performance", "Verification"];
+---
+<BaseLayout title={`${company.name} — ${company.positioning}`} description={company.description}>
+  <section class="hero consultancy-hero"><div class="hero-copy"><p class="eyebrow">{company.positioning}</p><h1>Independent materials engineering from feedstock to coating performance.</h1><p class="hero-text">{company.specialization}</p><p>Structured technical analysis for ceramic feedstocks, thermal spray, TBC/EBC systems, and high-temperature coating decisions.</p><div class="hero-actions"><a class="button" href="/contact/">Discuss an engineering problem</a><a class="button button-secondary" href="/technical-studies/">View technical studies</a></div></div><div class="hero-media"><img src="/industrial-spraying-hero.png" alt="Thermal spray coating process" width="780" height="520" /></div></section>
+  <section class="section"><div class="section-heading"><p class="eyebrow">Problems I help solve</p><h2>Make the engineering decision explicit</h2><p>Independent analysis connects requirements, evidence, trade-offs, and validation—not just products and supplier claims.</p></div><div class="problem-grid">{problems.map((problem, i) => <article><span>0{i + 1}</span><p>{problem}</p></article>)}</div></section>
+  <div class="section-dark"><section class="section"><p class="eyebrow">Engineering chain</p><h2>Follow cause and effect across the coating system</h2><div class="engineering-chain">{chain.map((item, i) => <span>{item}{i < chain.length - 1 && <b aria-hidden="true">→</b>}</span>)}</div></section></div>
+  <section class="section" id="services"><div class="section-heading"><p class="eyebrow">Consulting services</p><h2>Analysis matched to the decision in front of you</h2></div><div class="service-grid">{services.filter((s) => s.featured).map((service) => <ServiceCard service={service} />)}</div><a class="button button-secondary section-cta" href="/services/">View all services</a></section>
+  <div class="section-muted"><section class="section" id="technical-studies"><div class="section-heading"><p class="eyebrow">Work shown transparently</p><h2>Featured technical study</h2></div>{technicalStudies.map((study) => <StudyCard study={study} />)}</section></div>
+  <section class="section"><div class="section-heading"><p class="eyebrow">Knowledge Base</p><h2>Technical depth organized as a connected system</h2></div><div class="knowledge-grid">{knowledgeEntries.slice(0, 3).map((entry) => <KnowledgeCard entry={entry} />)}</div><a class="button button-secondary section-cta" href="/knowledge-base/">Explore the Knowledge Base</a></section>
+  <section class="china-callout"><p class="eyebrow">China materials &amp; supplier intelligence</p><h2>Engineering first. Sourcing second.</h2><p>Technical access to China’s advanced-materials manufacturing ecosystem, with supplier claims screened against composition, feedstock architecture, process compatibility, evidence quality, and application requirements.</p><a class="button" href="/services/#supplier-intelligence">Explore supplier intelligence</a></section>
+</BaseLayout>

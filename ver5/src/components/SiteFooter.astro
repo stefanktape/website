@@ -1,0 +1,7 @@
+---
+import { company } from "@data/company";
+---
+<footer class="site-footer">
+  <div><strong>{company.name}</strong><p>{company.tagline}</p><p class="footer-location">{company.location}</p></div>
+  <nav class="footer-meta" aria-label="Footer navigation"><a href="/services/">Services</a><a href="/knowledge-base/">Knowledge Base</a><a href="/technical-studies/">Technical Studies</a><a href={`mailto:${company.email}`}>{company.email}</a></nav>
+</footer>

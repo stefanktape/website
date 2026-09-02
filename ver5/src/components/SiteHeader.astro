@@ -1,0 +1,259 @@
+---
+import { company } from "@data/company";
+import { mainNav } from "@data/navigation";
+
+// Stable, unique id fragment for each nav item that has a dropdown/accordion,
+// used to wire up aria-controls / aria-labelledby between trigger and panel.
+function slugify(label: string) {
+  return label.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+}
+---
+
+<header class="site-header">
+
+  <!-- Brand -->
+  <a class="brand" href="/" aria-label={`${company.name} — home`}>
+    <img src="/logo.svg" alt="" width="40" height="40" />
+    <span>
+      <strong>{company.name}</strong>
+      <small>Advanced Materials &amp; Surface Engineering</small>
+    </span>
+  </a>
+
+  <!-- Desktop navigation -->
+  <nav class="main-nav" aria-label="Main navigation">
+    {mainNav.map((item) => {
+      if (item.href && !item.dropdown) {
+        return <a href={item.href} class="main-nav__link">{item.label}</a>;
+      }
+      if (item.dropdown) {
+        const slug = slugify(item.label);
+        const triggerId = `nav-dropdown-trigger-${slug}`;
+        const panelId = `nav-dropdown-panel-${slug}`;
+        return (
+          <div class="nav-dropdown" data-dropdown>
+            <button
+              id={triggerId}
+              class="nav-dropdown__trigger main-nav__link"
+              data-dropdown-trigger
+              aria-expanded="false"
+              aria-haspopup="true"
+              aria-controls={panelId}
+            >
+              {item.label}
+              <svg class="nav-arrow" aria-hidden="true" width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <div id={panelId} class="nav-dropdown__panel" data-dropdown-panel aria-labelledby={triggerId}>
+              {item.dropdown.map((group) => (
+                <div class="dropdown-group">
+                  <p class="dropdown-group__label">{group.groupLabel}</p>
+                  {group.links.map((link) => (
+                    <a href={link.href} class="dropdown-link">{link.label}</a>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      }
+    })}
+  </nav>
+
+  <!-- Hamburger (mobile only) -->
+  <button
+    class="hamburger"
+    data-hamburger
+    aria-expanded="false"
+    aria-controls="mobile-nav"
+    aria-label="Open navigation menu"
+  >
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <!-- Mobile navigation panel (absolute, overlays content) -->
+  <nav
+    class="mobile-menu"
+    id="mobile-nav"
+    data-mobile-menu
+    aria-label="Mobile navigation"
+    hidden
+  >
+    {mainNav.map((item) => {
+      if (item.href && !item.dropdown) {
+        return <a href={item.href} class="mobile-link">{item.label}</a>;
+      }
+      if (item.dropdown) {
+        const slug = slugify(item.label);
+        const triggerId = `mobile-accordion-trigger-${slug}`;
+        const panelId = `mobile-accordion-panel-${slug}`;
+        return (
+          <div class="mobile-accordion" data-accordion>
+            <button
+              id={triggerId}
+              class="mobile-accordion__trigger"
+              data-accordion-trigger
+              aria-expanded="false"
+              aria-controls={panelId}
+            >
+              {item.label}
+              <svg class="nav-arrow" aria-hidden="true" width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <div id={panelId} class="mobile-accordion__panel" aria-labelledby={triggerId} hidden>
+              {item.dropdown.map((group) => (
+                <div class="mobile-group">
+                  <p class="mobile-group__label">{group.groupLabel}</p>
+                  {group.links.map((link) => (
+                    <a href={link.href} class="mobile-link mobile-sub-link">{link.label}</a>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      }
+    })}
+  </nav>
+
+</header>
+
+<script>
+  // Navigation interactions — runs once per page load
+  (function () {
+
+    // ── Desktop dropdown ───────────────────────────────────
+    const dropdowns = document.querySelectorAll<HTMLElement>('[data-dropdown]');
+
+    dropdowns.forEach((dropdown) => {
+      const trigger = dropdown.querySelector<HTMLButtonElement>('[data-dropdown-trigger]');
+      const panel = dropdown.querySelector<HTMLElement>('[data-dropdown-panel]');
+      if (!trigger || !panel) return;
+
+      const open = () => {
+        trigger.setAttribute('aria-expanded', 'true');
+        dropdown.classList.add('is-open');
+      };
+      const close = () => {
+        trigger.setAttribute('aria-expanded', 'false');
+        dropdown.classList.remove('is-open');
+      };
+
+      // Click toggles
+      trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dropdown.classList.contains('is-open') ? close() : open();
+      });
+
+      // Keyboard: Enter / Space / Escape on trigger
+      trigger.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          dropdown.classList.contains('is-open') ? close() : open();
+        }
+        if (e.key === 'Escape') { close(); trigger.focus(); }
+      });
+
+      // Escape from inside panel — close and return focus to the trigger
+      panel.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') { close(); trigger.focus(); }
+      });
+
+      // When keyboard focus leaves the trigger+panel entirely, close cleanly
+      // (no forced focus move — the browser is already moving focus elsewhere).
+      dropdown.addEventListener('focusout', (e) => {
+        const next = e.relatedTarget as Node | null;
+        if (!next || !dropdown.contains(next)) close();
+      });
+    });
+
+    // Click outside — close all dropdowns
+    document.addEventListener('click', () => {
+      dropdowns.forEach((dropdown) => {
+        const trigger = dropdown.querySelector<HTMLButtonElement>('[data-dropdown-trigger]');
+        if (trigger) {
+          trigger.setAttribute('aria-expanded', 'false');
+          dropdown.classList.remove('is-open');
+        }
+      });
+    });
+
+    // ── Mobile hamburger ───────────────────────────────────
+    const hamburger = document.querySelector<HTMLButtonElement>('[data-hamburger]');
+    const mobileMenu = document.querySelector<HTMLElement>('[data-mobile-menu]');
+
+    // Collapse every mobile accordion back to its closed state.
+    const resetAccordions = () => {
+      document.querySelectorAll<HTMLButtonElement>('[data-accordion-trigger]').forEach((trigger) => {
+        trigger.setAttribute('aria-expanded', 'false');
+        const panel = trigger.nextElementSibling as HTMLElement | null;
+        if (panel) panel.setAttribute('hidden', '');
+      });
+    };
+
+    const closeMobileMenu = () => {
+      if (!hamburger || !mobileMenu) return;
+      hamburger.setAttribute('aria-expanded', 'false');
+      hamburger.setAttribute('aria-label', 'Open navigation menu');
+      mobileMenu.setAttribute('hidden', '');
+      resetAccordions();
+    };
+
+    if (hamburger && mobileMenu) {
+      hamburger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = hamburger.getAttribute('aria-expanded') === 'true';
+        if (isOpen) {
+          closeMobileMenu();
+        } else {
+          hamburger.setAttribute('aria-expanded', 'true');
+          hamburger.setAttribute('aria-label', 'Close navigation menu');
+          mobileMenu.removeAttribute('hidden');
+        }
+      });
+
+      // Close menu on any link click (including anchor links)
+      mobileMenu.querySelectorAll('a').forEach((link) => {
+        link.addEventListener('click', () => closeMobileMenu());
+      });
+
+      // Escape closes the mobile menu and returns focus to the hamburger
+      document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Escape') return;
+        if (hamburger.getAttribute('aria-expanded') === 'true') {
+          closeMobileMenu();
+          hamburger.focus();
+        }
+      });
+
+      // Optional: click outside the open mobile menu closes it too,
+      // without interfering with clicks on links inside it.
+      document.addEventListener('click', (e) => {
+        if (hamburger.getAttribute('aria-expanded') !== 'true') return;
+        const target = e.target as Node;
+        if (!mobileMenu.contains(target) && !hamburger.contains(target)) {
+          closeMobileMenu();
+        }
+      });
+    }
+
+    // ── Mobile accordion ───────────────────────────────────
+    document.querySelectorAll<HTMLButtonElement>('[data-accordion-trigger]').forEach((trigger) => {
+      trigger.addEventListener('click', () => {
+        const isOpen = trigger.getAttribute('aria-expanded') === 'true';
+        trigger.setAttribute('aria-expanded', String(!isOpen));
+        const panel = trigger.nextElementSibling as HTMLElement | null;
+        if (panel) {
+          isOpen
+            ? panel.setAttribute('hidden', '')
+            : panel.removeAttribute('hidden');
+        }
+      });
+    });
+
+  })();
+</script>

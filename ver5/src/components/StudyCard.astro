@@ -1,0 +1,5 @@
+---
+import type { TechnicalStudy } from "@data/technical-studies";
+const { study } = Astro.props as { study: TechnicalStudy };
+---
+<article class="study-card"><p class="eyebrow">Technical study</p><h3>{study.title}</h3><p>{study.summary}</p><a class="text-link" href={`/technical-studies/${study.slug}/`}>Review the analysis →</a></article>

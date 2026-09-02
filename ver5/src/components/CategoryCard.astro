@@ -1,0 +1,16 @@
+---
+import type { Category } from "@data/categories";
+
+interface Props {
+  category: Category;
+}
+
+const { category } = Astro.props;
+---
+
+<article class="category-card">
+  <div class="card-icon" aria-hidden="true">///</div>
+  <h3>{category.title}</h3>
+  <p>{category.summary}</p>
+  <a class="text-link" href={`/categories/${category.slug}/`}>View category</a>
+</article>

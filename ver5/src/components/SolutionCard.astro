@@ -1,0 +1,39 @@
+---
+import type { SolutionRoute } from "@data/solutions";
+
+interface Props {
+  solution: SolutionRoute;
+  compact?: boolean;
+}
+
+const { solution, compact = false } = Astro.props;
+---
+
+<article class="solution-card">
+  <p class="eyebrow">{solution.focusArea}</p>
+  <h3>{solution.title}</h3>
+  <p class="solution-subtitle">{solution.subtitle}</p>
+  <p class="solution-summary">{solution.summary}</p>
+
+  {!compact && (
+    <ol class="solution-steps">
+      {solution.steps.map((step) => (
+        <li>
+          <strong>{step.label}</strong>
+          <p>{step.description}</p>
+        </li>
+      ))}
+    </ol>
+  )}
+
+  {compact && (
+    <ul class="solution-steps-compact">
+      {solution.steps.map((step) => (
+        <li>{step.label}</li>
+      ))}
+    </ul>
+  )}
+
+  <p class="solution-note">{solution.note}</p>
+  <a class="text-link" href={`/categories/${solution.categorySlug}/`}>See category →</a>
+</article>

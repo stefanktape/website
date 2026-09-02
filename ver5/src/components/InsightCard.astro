@@ -1,0 +1,30 @@
+---
+import type { Insight } from "@data/insights";
+
+interface Props {
+  insight: Insight;
+}
+
+const { insight } = Astro.props;
+
+const typeLabels: Record<string, string> = {
+  exhibition: "Exhibition",
+  technical: "Technical",
+  supplier: "Supplier",
+  youtube: "YouTube",
+  research: "Research"
+};
+---
+
+<article class="insight-card">
+  <div class="insight-card__top">
+    <span class="insight-type">{typeLabels[insight.type] ?? insight.type}</span>
+    {insight.status === "placeholder" && <span class="insight-status">Coming soon</span>}
+    {insight.status === "draft" && <span class="insight-status draft">Draft</span>}
+  </div>
+  <h3>{insight.title}</h3>
+  <p>{insight.summary}</p>
+  <div class="insight-tags">
+    {insight.tags.slice(0, 3).map((tag) => <span class="tag">{tag}</span>)}
+  </div>
+</article>

@@ -1,0 +1,19 @@
+---
+import type { ResourceItem } from "@data/resources";
+
+interface Props {
+  items: ResourceItem[];
+}
+
+const { items } = Astro.props;
+---
+
+<div class="resource-grid">
+  {items.map((item) => (
+    <article class="resource-item">
+      <span>{item.type}</span>
+      <h3>{item.title}</h3>
+      <p>{item.description}</p>
+    </article>
+  ))}
+</div>

@@ -1,0 +1,44 @@
+---
+import type { ProductSpec } from "@data/products";
+
+interface Props {
+  product: ProductSpec;
+}
+
+const { product } = Astro.props;
+---
+
+<article class="product-card">
+  <div class="product-card__top">
+    <p class="eyebrow">{product.technologyType}</p>
+    <h3>{product.productName}</h3>
+  </div>
+
+  <dl class="spec-list">
+    <div>
+      <dt>Manufacturer</dt>
+      <dd>{product.manufacturer}</dd>
+    </div>
+    <div>
+      <dt>Application</dt>
+      <dd>{product.application}</dd>
+    </div>
+    <div>
+      <dt>Materials / feedstock</dt>
+      <dd>{product.materials}</dd>
+    </div>
+  </dl>
+
+  <div class="spec-block">
+    <strong>Key specifications</strong>
+    <ul>
+      {product.keySpecifications.map((spec) => <li>{spec}</li>)}
+    </ul>
+  </div>
+
+  <div class="product-actions">
+    <a class="button button-secondary" href={product.catalogHref}>{product.catalogLabel}</a>
+    <a class="button button-secondary" href={product.videoHref}>{product.videoLabel}</a>
+    <a class="button" href={product.contactHref}>Contact</a>
+  </div>
+</article>

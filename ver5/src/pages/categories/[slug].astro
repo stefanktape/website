@@ -1,0 +1,6 @@
+---
+import { categories } from "@data/categories";
+export function getStaticPaths() { return categories.map((category) => ({ params: { slug: category.slug } })); }
+const targets: Record<string, string> = { "thermal-barrier-coatings": "/knowledge-base/aps-ysz-tbc/", "feedstock-materials": "/knowledge-base/#feedstocks", "thermal-spraying": "/knowledge-base/#processes", "plasma-spraying": "/knowledge-base/atmospheric-plasma-spray/" };
+return Astro.redirect(targets[Astro.params.slug ?? ""] ?? "/knowledge-base/", 301);
+---

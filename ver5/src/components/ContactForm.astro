@@ -1,0 +1,8 @@
+<form class="contact-form" action={`mailto:email@example.com`} method="post" enctype="text/plain">
+  <label>Name<input required type="text" name="name" autocomplete="name" /></label>
+  <label>Company or organization<input type="text" name="company" autocomplete="organization" /></label>
+  <label>Email<input required type="email" name="email" autocomplete="email" /></label>
+  <label>Type of support<select name="service"><option>Technical Review</option><option>Comparative Engineering Study</option><option>Feedstock Selection & Specification</option><option>Materials & Process Selection</option><option>Supplier Intelligence / Technical Sourcing</option><option>Development Scoping</option></select></label>
+  <label>Engineering problem<textarea required name="problem" rows="6" placeholder="Describe the application, requirements, candidate materials or processes, and the decision you need to make."></textarea></label>
+  <button class="button" type="submit">Start a technical conversation</button>
+</form>
