@@ -1,4 +1,3 @@
 ---
-import BaseLayout from "@layouts/BaseLayout.astro"; import StudyCard from "@components/StudyCard.astro"; import { company } from "@data/company"; import { technicalStudies } from "@data/technical-studies";
+return Astro.redirect("/insights/", 301);
 ---
-<BaseLayout title={`Technical Studies | ${company.name}`} description="Structured engineering studies showing problems, criteria, comparisons, recommendations, uncertainty, and validation."><section class="page-hero"><p class="eyebrow">Analysis, not marketing</p><h1>Technical Studies</h1><p>Structured examples make the reasoning visible: problem → requirements → criteria → options → comparison → recommendation → uncertainties → validation.</p></section><section class="section"><div class="knowledge-grid">{technicalStudies.map((study) => <StudyCard study={study} />)}</div></section></BaseLayout>

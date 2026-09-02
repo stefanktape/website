@@ -1,0 +1,12 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import KnowledgeCard from "@components/KnowledgeCard.astro";
+import StudyCard from "@components/StudyCard.astro";
+import { company } from "@data/company";
+import { knowledgeEntries } from "@data/knowledge";
+import { technicalStudies } from "@data/technical-studies";
+---
+<BaseLayout title={`Insights | ${company.name}`} description="Field notes and structured technical studies in materials and surface engineering.">
+  <section class="page-hero"><p class="eyebrow">Engineering knowledge</p><h1>Insights</h1><p>Educational field notes and structured technical studies, with each format clearly identified.</p></section>
+  <section class="section"><div class="knowledge-grid">{technicalStudies.map((study) => <StudyCard study={study} />)}{knowledgeEntries.map((entry) => <KnowledgeCard entry={entry} typeLabel="Field note" />)}</div></section>
+</BaseLayout>
