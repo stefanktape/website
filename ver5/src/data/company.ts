@@ -7,9 +7,8 @@ export const company = {
   positioning: "Advanced Materials & Surface Engineering",
   specialization: "Ceramic Feedstocks · Thermal Spray · TBC/EBC · High-Temperature Coatings",
   location: "Shanghai, China — working across international materials and manufacturing networks",
-  email: "email@example.com",
-  telegram: "@telegram_placeholder",
-  whatsapp: "+00 000 000 0000",
-  wechat: "wechat_placeholder",
-  linkedin: "linkedin.com/in/placeholder"
+  email: "kalashnikov.stepan996@gmail.com",
+  telegram: "@stefanios",
+  wechat: "StefaniosKKK",
+  linkedin: "https://www.linkedin.com/in/stepankalashnikov/"
 };

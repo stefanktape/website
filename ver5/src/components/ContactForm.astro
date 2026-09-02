@@ -1,4 +1,7 @@
-<form class="contact-form" action={`mailto:email@example.com`} method="post" enctype="text/plain">
+---
+import { company } from "@data/company";
+---
+<form class="contact-form" action={`mailto:${company.email}`} method="post" enctype="text/plain">
   <label>Name<input required type="text" name="name" autocomplete="name" /></label>
   <label>Company or organization<input type="text" name="company" autocomplete="organization" /></label>
   <label>Email<input required type="email" name="email" autocomplete="email" /></label>
