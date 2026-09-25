@@ -1,0 +1,41 @@
+---
+import { localeNames, locales, type Locale } from "../i18n/config";
+import { ui } from "../i18n/ui";
+import { assetPath, pagePath, type PageKey } from "../i18n/paths";
+import { site } from "@data/site";
+
+interface Props { locale: Locale; page: PageKey; translations?: Partial<Record<Locale, string>>; }
+const { locale, page, translations = {} } = Astro.props;
+const t = ui[locale];
+const other = locales.find((item) => item !== locale)!;
+const alternateSlug = translations[other];
+const switchHref = page === "insights" && Astro.params.slug
+  ? alternateSlug ? pagePath(other, "insights", alternateSlug) : pagePath(other, "insights")
+  : pagePath(other, page);
+const unavailable = Boolean(page === "insights" && Astro.params.slug && !alternateSlug);
+const nav = [
+  ["home", t.nav.home], ["insights", t.nav.insights], ["about", t.nav.about], ["contact", t.nav.contact]
+] as const;
+---
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href={pagePath(locale, "home")} aria-label={`${site.name} — ${t.nav.home}`}>
+      <img src={assetPath("/logo.svg")} alt="" width="34" height="34" />
+      <span><strong>{site.name}</strong><small>{locale === "zh" ? site.chineseName : "Materials & Surface Engineering"}</small></span>
+    </a>
+    <button class="menu-button" type="button" aria-expanded="false" aria-controls="site-menu" data-menu-button><span class="sr-only">{t.nav.open}</span><span></span><span></span></button>
+    <div class="site-menu" id="site-menu" data-menu>
+      <nav aria-label={t.nav.open}>{nav.map(([key, label]) => <a href={pagePath(locale, key)} aria-current={page === key ? "page" : undefined}>{label}</a>)}</nav>
+      <a class="language-link" href={switchHref} lang={other} hreflang={other} title={unavailable ? t.insights.unavailable : undefined}>{localeNames[other]}{unavailable && <span aria-hidden="true"> *</span>}</a>
+    </div>
+  </div>
+</header>
+<script>
+  const button = document.querySelector<HTMLButtonElement>("[data-menu-button]");
+  const menu = document.querySelector<HTMLElement>("[data-menu]");
+  button?.addEventListener("click", () => {
+    const open = button.getAttribute("aria-expanded") === "true";
+    button.setAttribute("aria-expanded", String(!open));
+    menu?.classList.toggle("is-open", !open);
+  });
+</script>

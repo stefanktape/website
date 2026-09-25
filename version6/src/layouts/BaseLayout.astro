@@ -1,0 +1,15 @@
+---
+import SiteHeader from "@components/SiteHeader.astro";
+import SiteFooter from "@components/SiteFooter.astro";
+import type { Locale } from "../i18n/config";
+import type { PageKey } from "../i18n/paths";
+import { pagePath, withBase } from "../i18n/paths";
+import "@styles/global.css";
+
+interface Props { locale: Locale; page: PageKey; title: string; description: string; slug?: string; alternates?: Partial<Record<Locale, string>>; article?: boolean; }
+const { locale, page, title, description, slug, alternates = {}, article = false } = Astro.props;
+const route = slug ? `/${locale}/insights/${slug}/` : page === "home" ? `/${locale}/` : `/${locale}/${page}/`;
+const canonicalURL = new URL(withBase(route), Astro.site ?? Astro.url.origin);
+const alternateEntries = Object.entries(alternates).filter(([, value]) => value !== undefined) as [Locale,string][];
+---
+<!doctype html><html lang={locale}><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><meta name="description" content={description}/><link rel="canonical" href={canonicalURL}/>{alternateEntries.map(([lang, altSlug]) => <link rel="alternate" hreflang={lang} href={new URL(pagePath(lang,page,altSlug || undefined), Astro.site ?? Astro.url.origin)} />)}<meta property="og:title" content={title}/><meta property="og:description" content={description}/><meta property="og:type" content={article ? "article" : "website"}/><link rel="icon" href={withBase("/logo.svg")}/><title>{title}</title></head><body><a class="skip-link" href="#main">Skip to content</a><SiteHeader locale={locale} page={page} translations={alternates}/><main id="main"><slot /></main><SiteFooter locale={locale}/></body></html>

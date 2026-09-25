@@ -1,0 +1,11 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import InsightCard from "@components/InsightCard.astro";
+import { locales, type Locale } from "../../../i18n/config";
+import { ui } from "../../../i18n/ui";
+export function getStaticPaths() { return locales.map(locale => ({ params:{ locale } })); }
+const locale = Astro.params.locale as Locale; const t = ui[locale];
+const entries = (await getCollection("insights", ({data}) => data.locale === locale && !data.draft)).sort((a,b) => b.data.publishedAt.valueOf()-a.data.publishedAt.valueOf());
+---
+<BaseLayout locale={locale} page="insights" title={`${t.insights.title} | Stepan Kalashnikov`} description={t.insights.intro} alternates={{ en:"", zh:"" }}><header class="page-intro"><p class="eyebrow">{t.insights.eyebrow}</p><h1>{t.insights.title}</h1><p>{t.insights.intro}</p></header><section class="section insight-list">{entries.length > 0 ? <div class="insight-grid">{entries.map(entry => <InsightCard entry={entry} locale={locale}/>)}</div> : <p class="empty-state">{t.insights.empty}</p>}</section></BaseLayout>

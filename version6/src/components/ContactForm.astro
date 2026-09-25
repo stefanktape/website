@@ -1,0 +1,15 @@
+---
+import type { Locale } from "../i18n/config";
+import { ui } from "../i18n/ui";
+import { site } from "@data/site";
+const { locale } = Astro.props as { locale: Locale };
+const t = ui[locale].contact;
+---
+<form class="contact-form" action={`mailto:${site.email}`} method="post" enctype="text/plain">
+  <label>{t.name} <span>{t.required}</span><input required type="text" name="name" autocomplete="name" /></label>
+  <label>{t.organization}<input type="text" name="organization" autocomplete="organization" /></label>
+  <label>{t.email} <span>{t.required}</span><input required type="email" name="email" autocomplete="email" /></label>
+  <label>{t.topic}<input type="text" name="topic" /></label>
+  <label>{t.message} <span>{t.required}</span><textarea required name="message" rows="7"></textarea></label>
+  <button class="button" type="submit">{t.send}</button>
+</form>

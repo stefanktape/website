@@ -1,0 +1,10 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import ContactForm from "@components/ContactForm.astro";
+import { locales, type Locale } from "../../i18n/config";
+import { ui } from "../../i18n/ui";
+import { site } from "@data/site";
+export function getStaticPaths() { return locales.map(locale => ({ params:{ locale } })); }
+const locale = Astro.params.locale as Locale; const t = ui[locale];
+---
+<BaseLayout locale={locale} page="contact" title={t.contact.metaTitle} description={t.contact.intro} alternates={{ en:"", zh:"" }}><header class="page-intro"><p class="eyebrow">{t.contact.eyebrow}</p><h1>{t.contact.title}</h1><p>{t.contact.intro}</p></header><section class="contact-layout"><div><p class="contact-email">Email</p><a href={`mailto:${site.email}`}>{site.email}</a><p>{locale === "zh" ? "请勿在初次联系时发送机密信息。" : "Please do not send confidential information in an initial message."}</p></div><ContactForm locale={locale}/></section></BaseLayout>
