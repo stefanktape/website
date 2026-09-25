@@ -1,0 +1,21 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { locales, type Locale } from "../../i18n/config";
+import { ui } from "../../i18n/ui";
+import { assetPath } from "../../i18n/paths";
+import { site } from "@data/site";
+import { profile } from "@data/profile";
+export function getStaticPaths() { return locales.map(locale => ({ params:{ locale } })); }
+const locale = Astro.params.locale as Locale; const t = ui[locale]; const data = profile[locale];
+---
+<BaseLayout locale={locale} page="about" title={t.about.metaTitle} description={t.about.intro} alternates={{ en:"", zh:"" }}>
+  <header class="page-intro"><p class="eyebrow">{t.about.eyebrow}</p><h1>{t.about.title}</h1><p>{t.about.intro}</p></header>
+  <div class="cv-layout"><aside><dl><div><dt>{locale === "zh" ? "所在地" : "Location"}</dt><dd>{locale === "zh" ? "中国上海" : site.location}</dd></div><div><dt>Email</dt><dd><a href={`mailto:${site.email}`}>{site.email}</a></dd></div></dl></aside><div class="cv-content">
+    <section><h2>{t.about.focusTitle}</h2><ul>{t.about.focus.map(item => <li>{item}</li>)}</ul></section>
+    <section><h2>{t.about.educationTitle}</h2>{data.education.map(item => <article class="timeline"><time>{item.period}</time><div><h3>{item.place}</h3><p><strong>{item.role}</strong></p><p>{item.detail}</p></div></article>)}</section>
+    <section><h2>{t.about.experienceTitle}</h2>{data.experience.map(item => <article class="timeline"><time>{item.period}</time><div><h3>{item.place}</h3><p><strong>{item.role}</strong></p>{item.detail && <p>{item.detail}</p>}</div></article>)}</section>
+    <section><h2>{t.about.publicationTitle}</h2><p>{data.publication}</p><a class="doi" href="https://doi.org/10.1016/j.mencom.2024.02.038">DOI: 10.1016/j.mencom.2024.02.038</a></section>
+    <section class="split"><div><h2>{t.about.toolsTitle}</h2><ul class="plain-list">{data.tools.map(item => <li>{item}</li>)}</ul></div><div><h2>{t.about.languagesTitle}</h2><ul class="plain-list">{data.languages.map(item => <li>{item}</li>)}</ul></div></section>
+    <section><h2>{t.about.futureTitle}</h2><p>{t.about.future}</p></section><section><h2>{t.about.contactTitle}</h2><p><a href={`mailto:${site.email}`}>{site.email}</a><br/><a href={site.social.linkedin}>LinkedIn</a></p></section>
+  </div></div>
+</BaseLayout>

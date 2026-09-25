@@ -1,0 +1,18 @@
+---
+import { getCollection, render, type CollectionEntry } from "astro:content";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { pagePath, assetPath } from "../../../i18n/paths";
+import type { Locale } from "../../../i18n/config";
+import { ui } from "../../../i18n/ui";
+export async function getStaticPaths() { const entries = await getCollection("insights", ({data}) => !data.draft); return entries.map(entry => ({ params:{ locale:entry.data.locale, slug:entry.data.slug }, props:{ entry } })); }
+const { entry } = Astro.props as { entry: CollectionEntry<"insights"> }; const locale = entry.data.locale as Locale; const t = ui[locale]; const { Content } = await render(entry);
+const alternates = entry.data.translations ?? {}; const visual = entry.data.featuredVisual;
+const otherLocale = locale === "en" ? "zh" : "en";
+const counterpartUnavailable = !alternates[otherLocale];
+---
+<BaseLayout locale={locale} page="insights" slug={entry.data.slug} title={`${entry.data.title} | Stepan Kalashnikov`} description={entry.data.summary} alternates={alternates} article>
+  <article class="article"><a class="back-link" href={pagePath(locale,"insights")}>← {t.insights.back}</a><header><div class="meta"><span>{entry.data.type.replaceAll("-"," ")}</span><time datetime={entry.data.publishedAt.toISOString()}>{entry.data.publishedAt.toLocaleDateString(locale === "zh" ? "zh-CN" : "en-GB",{year:"numeric",month:"long",day:"numeric"})}</time></div><h1>{entry.data.title}</h1><p class="article-summary">{entry.data.summary}</p>{entry.data.tags.length > 0 && <ul class="tags">{entry.data.tags.map(tag => <li>{tag}</li>)}</ul>}{counterpartUnavailable && <p class="translation-note">{t.insights.unavailable}</p>}</header>
+  {visual?.kind === "image" && <figure class="featured-visual"><img src={assetPath(visual.src)} alt={visual.alt}/>{(visual.caption || visual.credit) && <figcaption>{visual.caption}{visual.caption && visual.credit && " · "}{visual.credit}</figcaption>}</figure>}
+  {visual?.kind === "summary-card" && <figure class="summary-card" aria-label={visual.alt}><p>{t.insights.visual}</p><h2>{entry.data.title}</h2><p>{entry.data.summary}</p><ul>{entry.data.tags.slice(0,5).map(tag => <li>{tag}</li>)}</ul>{visual.caption && <figcaption>{visual.caption}</figcaption>}</figure>}
+  <div class="prose"><Content /></div></article>
+</BaseLayout>
