@@ -1,0 +1,8 @@
+---
+import type { Locale } from "../i18n/config";
+import { ui } from "../i18n/ui";
+import Arrow from "./Arrow.astro";
+const { locale } = Astro.props as { locale: Locale };
+const t = ui[locale].insights;
+---
+<div class="empty-state"><span class="empty-marker" aria-hidden="true"><Arrow direction="up-right" /></span><div><h3>{t.emptyTitle}</h3><p>{t.empty}</p></div></div>

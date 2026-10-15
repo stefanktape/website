@@ -1,0 +1,9 @@
+---
+import { site } from "@data/site";
+interface Props { dark?: boolean; }
+const { dark = false } = Astro.props;
+const logo = dark ? site.logo.dark : site.logo.light;
+---
+{logo ? <img class="brand-image" src={logo} width="220" height="60" alt={site.name} /> :
+  <span class="wordmark"><b>SV</b><span>SOLUTIONS</span></span>
+}

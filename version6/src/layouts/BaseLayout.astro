@@ -3,13 +3,81 @@ import SiteHeader from "@components/SiteHeader.astro";
 import SiteFooter from "@components/SiteFooter.astro";
 import type { Locale } from "../i18n/config";
 import type { PageKey } from "../i18n/paths";
-import { pagePath, withBase } from "../i18n/paths";
+import { pagePath } from "../i18n/paths";
+import { site } from "@data/site";
+import { ui } from "../i18n/ui";
+import "@fontsource-variable/inter";
+import "@fontsource-variable/inter/wght-italic.css";
 import "@styles/global.css";
 
-interface Props { locale: Locale; page: PageKey; title: string; description: string; slug?: string; alternates?: Partial<Record<Locale, string>>; article?: boolean; }
-const { locale, page, title, description, slug, alternates = {}, article = false } = Astro.props;
-const route = slug ? `/${locale}/insights/${slug}/` : page === "home" ? `/${locale}/` : `/${locale}/${page}/`;
-const canonicalURL = new URL(withBase(route), Astro.site ?? Astro.url.origin);
-const alternateEntries = Object.entries(alternates).filter(([, value]) => value !== undefined) as [Locale,string][];
+interface Props {
+  locale: Locale;
+  page?: PageKey;
+  title: string;
+  description: string;
+  slug?: string;
+  alternates?: Partial<Record<Locale, string>>;
+  article?: boolean;
+  publishedAt?: Date;
+  updatedAt?: Date;
+  image?: string;
+  noindex?: boolean;
+}
+const { locale, page, title, description, slug, alternates = {}, article = false, publishedAt, updatedAt, image, noindex = false } = Astro.props;
+const canonicalURL = new URL(noindex ? "/404/" : pagePath(locale, page ?? "home", slug), site.url);
+const alternateEntries = Object.entries(alternates).filter(([, value]) => value !== undefined) as [Locale, string][];
+const imageURL = new URL(image ?? site.socialImage, site.url);
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    { "@type": "WebSite", "@id": `${site.url}/#website`, url: site.url, name: site.name, inLanguage: ["en", "zh"], publisher: { "@id": `${site.url}/#brand` } },
+    { "@type": "Organization", "@id": `${site.url}/#brand`, name: site.name, url: site.url, founder: { "@id": `${site.url}/#founder` } },
+    { "@type": "Person", "@id": `${site.url}/#founder`, name: site.founder.name, url: `${site.url}/en/about/`, sameAs: site.social.linkedin ? [site.social.linkedin] : [] },
+    ...(article ? [{
+      "@type": "Article", headline: title.replace(` | ${site.name}`, ""), description,
+      mainEntityOfPage: canonicalURL.href, inLanguage: locale,
+      datePublished: publishedAt?.toISOString(), dateModified: (updatedAt ?? publishedAt)?.toISOString(),
+      author: { "@id": `${site.url}/#founder` }, publisher: { "@id": `${site.url}/#brand` }
+    }] : [])
+  ]
+};
 ---
-<!doctype html><html lang={locale}><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><meta name="description" content={description}/><link rel="canonical" href={canonicalURL}/>{alternateEntries.map(([lang, altSlug]) => <link rel="alternate" hreflang={lang} href={new URL(pagePath(lang,page,altSlug || undefined), Astro.site ?? Astro.url.origin)} />)}<meta property="og:title" content={title}/><meta property="og:description" content={description}/><meta property="og:type" content={article ? "article" : "website"}/><link rel="icon" href={withBase("/logo.svg")}/><title>{title}</title></head><body><a class="skip-link" href="#main">Skip to content</a><SiteHeader locale={locale} page={page} translations={alternates}/><main id="main"><slot /></main><SiteFooter locale={locale}/></body></html>
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+    <link rel="canonical" href={canonicalURL} />
+    {alternateEntries.map(([lang, altSlug]) => <link rel="alternate" hreflang={lang} href={new URL(pagePath(lang, page ?? "home", altSlug || undefined), site.url)} />)}
+    {alternateEntries.length > 0 && <link rel="alternate" hreflang="x-default" href={new URL(pagePath(alternates.en !== undefined ? "en" : locale, page ?? "home", alternates.en || slug), site.url)} />}
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:locale" content={locale === "zh" ? "zh_CN" : "en_GB"} />
+    {alternateEntries.filter(([lang]) => lang !== locale).map(([lang]) => <meta property="og:locale:alternate" content={lang === "zh" ? "zh_CN" : "en_GB"} />)}
+    <meta property="og:type" content={article ? "article" : "website"} />
+    <meta property="og:image" content={imageURL} />
+    <meta property="og:image:alt" content={image ? title : "SV Solutions — Materials & Surface Engineering"} />
+    {article && publishedAt && <meta property="article:published_time" content={publishedAt.toISOString()} />}
+    {article && updatedAt && <meta property="article:modified_time" content={updatedAt.toISOString()} />}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imageURL} />
+    <meta name="theme-color" content="#0E2A47" />
+    <link rel="icon" type="image/svg+xml" href={site.favicon} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="alternate" type="application/rss+xml" title={`${site.name} — ${locale.toUpperCase()}`} href={`/${locale}/rss.xml`} />
+    <script type="application/ld+json" set:html={JSON.stringify(schema).replace(/</g, "\\u003c")} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{ui[locale].nav.skip}</a>
+    <SiteHeader locale={locale} page={page} translations={alternates} article={article} />
+    <main id="main" tabindex="-1"><slot /></main>
+    <SiteFooter locale={locale} />
+  </body>
+</html>

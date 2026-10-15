@@ -1,0 +1,9 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Arrow from "@components/Arrow.astro";
+import { ui } from "../i18n/ui";
+const t = ui.en;
+---
+<BaseLayout locale="en" title="Page not found | SV Solutions" description={t.notFound.text} noindex>
+  <section class="not-found container"><p class="eyebrow">404 / {t.notFound.label}</p><h1>{t.notFound.title}</h1><p>{t.notFound.text}</p><div class="hero-actions"><a class="button" href="/en/">{t.actions.home}<Arrow /></a><a class="button button-secondary" href="/zh/" lang="zh">返回中文首页<Arrow /></a></div></section>
+</BaseLayout>

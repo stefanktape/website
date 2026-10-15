@@ -1,5 +1,5 @@
 {
-  "name": "stepan-materials-website-v6",
+  "name": "sv-solutions",
   "version": "6.0.0",
   "private": true,
   "type": "module",
@@ -7,10 +7,19 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "check": "astro check"
+    "check": "astro check",
+    "new:insight": "node scripts/new-insight.mjs",
+    "test": "node --test tests/*.test.mjs"
   },
   "dependencies": {
-    "astro": "^5.0.0"
+    "@astrojs/mdx": "^4.3.14",
+    "@astrojs/rss": "^4.0.19",
+    "@astrojs/sitemap": "^3.7.4",
+    "@fontsource-variable/inter": "^5.3.0",
+    "astro": "^5.18.2"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "typescript": "^5.9.3"
+  }
 }

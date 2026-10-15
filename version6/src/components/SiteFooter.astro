@@ -1,4 +1,6 @@
 ---
+import Brand from "./Brand.astro";
+import Arrow from "./Arrow.astro";
 import type { Locale } from "../i18n/config";
 import { pagePath } from "../i18n/paths";
 import { ui } from "../i18n/ui";
@@ -6,4 +8,11 @@ import { site } from "@data/site";
 const { locale } = Astro.props as { locale: Locale };
 const t = ui[locale];
 ---
-<footer class="site-footer"><div><strong>{site.name}</strong><span>{t.footer.line}</span></div><nav aria-label="Footer"><a href={pagePath(locale,"insights")}>{t.nav.insights}</a><a href={pagePath(locale,"about")}>{t.nav.about}</a><a href={pagePath(locale,"contact")}>{t.nav.contact}</a></nav></footer>
+<footer class="site-footer">
+  <div class="container footer-top">
+    <div><a class="brand" href={pagePath(locale, "home")} aria-label={`${site.name} — ${t.nav.home}`}><Brand /></a><p>{t.footer.line}</p></div>
+    <nav aria-label={t.nav.footer}>{(["home", "insights", "about", "contact"] as const).map(page => <a href={pagePath(locale, page)}>{t.nav[page]}</a>)}</nav>
+    <a class="footer-email" href={`mailto:${site.email}`}>{t.actions.email}<Arrow direction="up-right" /></a>
+  </div>
+  <div class="container footer-bottom"><span>© {new Date().getFullYear()} {t.footer.copyright}</span><span>{t.footer.location}</span><a href={`/${locale}/rss.xml`}>{t.actions.rss}<Arrow direction="up-right" /></a></div>
+</footer>

@@ -1,11 +1,21 @@
 ---
-import { getCollection } from "astro:content";
 import BaseLayout from "@layouts/BaseLayout.astro";
 import InsightCard from "@components/InsightCard.astro";
+import EmptyInsights from "@components/EmptyInsights.astro";
+import Arrow from "@components/Arrow.astro";
 import { locales, type Locale } from "../../../i18n/config";
 import { ui } from "../../../i18n/ui";
-export function getStaticPaths() { return locales.map(locale => ({ params:{ locale } })); }
-const locale = Astro.params.locale as Locale; const t = ui[locale];
-const entries = (await getCollection("insights", ({data}) => data.locale === locale && !data.draft)).sort((a,b) => b.data.publishedAt.valueOf()-a.data.publishedAt.valueOf());
+import { getPublishedInsights } from "../../../lib/insights";
+import { site } from "@data/site";
+export function getStaticPaths() { return locales.map(locale => ({ params: { locale } })); }
+const locale = Astro.params.locale as Locale;
+const t = ui[locale];
+const entries = await getPublishedInsights(locale);
 ---
-<BaseLayout locale={locale} page="insights" title={`${t.insights.title} | Stepan Kalashnikov`} description={t.insights.intro} alternates={{ en:"", zh:"" }}><header class="page-intro"><p class="eyebrow">{t.insights.eyebrow}</p><h1>{t.insights.title}</h1><p>{t.insights.intro}</p></header><section class="section insight-list">{entries.length > 0 ? <div class="insight-grid">{entries.map(entry => <InsightCard entry={entry} locale={locale}/>)}</div> : <p class="empty-state">{t.insights.empty}</p>}</section></BaseLayout>
+<BaseLayout locale={locale} page="insights" title={`${t.insights.title} | ${site.name}`} description={t.insights.intro} alternates={{ en: "", zh: "" }}>
+  <header class="page-intro container"><p class="eyebrow">{t.insights.eyebrow}</p><h1>{t.insights.title}<span class="heading-stop">.</span></h1><p>{t.insights.intro}</p></header>
+  <section class="section container insight-list">
+    <div class="list-toolbar"><span>{t.insights.eyebrow}</span><a href={`/${locale}/rss.xml`}>{t.actions.rss}<Arrow direction="up-right" /></a></div>
+    {entries.length > 0 ? <div class="insight-grid">{entries.map(entry => <InsightCard entry={entry} locale={locale} />)}</div> : <EmptyInsights locale={locale} />}
+  </section>
+</BaseLayout>
