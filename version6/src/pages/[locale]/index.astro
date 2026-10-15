@@ -18,7 +18,8 @@ const content = home[locale];
 const entries = featuredInsights(await getPublishedInsights(locale));
 ---
 <BaseLayout locale={locale} page="home" title={t.meta.title} description={t.meta.description} alternates={{ en: "", zh: "" }}>
-  <section class="hero container">
+  <section class="hero-surface">
+  <div class="hero container">
     <div class="hero-copy">
       <p class="eyebrow"><span class="brand-dot" aria-hidden="true"></span>{content.hero.eyebrow}</p>
       <h1>{content.hero.title}</h1>
@@ -32,6 +33,7 @@ const entries = featuredInsights(await getPublishedInsights(locale));
       <ul>{content.hero.topics.map(topic => <li><span>{topic}</span><Arrow direction="up-right" /></li>)}</ul>
       <p class="panel-bottom"><span aria-hidden="true"></span>{content.hero.panelNote}</p>
     </aside>
+  </div>
   </section>
 
   <section class="section section-capabilities">

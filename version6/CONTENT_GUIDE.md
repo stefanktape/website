@@ -2,6 +2,14 @@
 
 Run all commands from `version6/`. Edit UTF-8 source files, not the generated `dist/` folder. English and Chinese text are maintained independently; the site does not automatically translate them.
 
+## Five-minute editing map
+
+1. **Homepage:** edit the matching `en` or `zh` section in `src/data/home.ts`. Hero styling is in `src/styles/global.css` under `.hero-surface`; keep technical claims factual.
+2. **About:** edit `src/data/profile.ts`. **Email/social links:** edit `src/data/site.ts` once for all pages.
+3. **Logos/icons:** copy approved files to `public/brand/logos/` or `icons/`, then update paths in `src/data/site.ts`. `logo.light` is used on the white header; `logo.dark` is used on the navy footer. Preserve natural image proportions and meaningful alt text. See [BRAND_GUIDE.md](BRAND_GUIDE.md) for exact mappings and the raster-quality caveat.
+4. **Colors:** edit the existing CSS custom properties at the top of `src/styles/global.css`; do not import a second competing token file. Keep orange sparse and test text contrast.
+5. **New article:** run `npm run new:insight -- --lang en --slug your-topic` (or `--lang zh`), edit the generated Markdown, then review before changing `draft: true` to `false`. Run `npm run check`, `npm test` and `npm run build` before deployment.
+
 ## 1. Homepage text
 
 Edit `src/data/home.ts`. The `en` and `zh` objects contain the hero, four capability cards, founder preview and contact CTA. Keep the existing quotes, commas and braces. Use `\n` inside a quoted title to request a line break. UI labels and page metadata are in `src/i18n/ui.ts`.

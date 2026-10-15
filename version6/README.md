@@ -48,7 +48,7 @@ Astro 5, strict TypeScript, Markdown/MDX content collections, small components, 
 ## Before publishing
 
 - Review both languages, especially dates, technical claims, links and contact details.
-- Supply final original logo exports when available; the temporary wordmark is intentional.
+- Review the supplied PNG lockups on light and dark surfaces; replace them with original vector masters when available.
 - Publish only reviewed posts (`draft: false`). An empty Insights section is supported.
 - Check article translation links in both directions and image paths beginning `/images/`.
 - Run `npm run check`, `npm test` and `npm run build`.

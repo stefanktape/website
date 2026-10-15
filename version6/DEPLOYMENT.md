@@ -53,7 +53,7 @@ Deploy the new `dist/`. Drafts never generate article pages, feed items or sitem
 ## Release review
 
 - Verify email ownership, factual About content, publication dates and both languages.
-- Replace temporary typography assets with original logo exports when available.
+- Inspect the supplied raster logos and icons; replace them with original vector masters when available.
 - Verify every published image and its permissions; check translation links.
 - Confirm canonical/hreflang/OG URLs use the custom domain, not a preview host.
 - Check mobile menu, keyboard focus, 404 status and root redirect on the deployed provider.

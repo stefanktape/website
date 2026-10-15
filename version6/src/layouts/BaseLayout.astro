@@ -69,7 +69,11 @@ const schema = {
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={imageURL} />
     <meta name="theme-color" content="#0E2A47" />
-    <link rel="icon" type="image/svg+xml" href={site.favicon} />
+    <link rel="icon" type="image/png" sizes="32x32" href={site.icons.small} />
+    <link rel="icon" type="image/png" sizes="48x48" href={site.favicon} />
+    <link rel="icon" type="image/png" sizes="256x256" href={site.icons.medium} />
+    <link rel="icon" type="image/png" sizes="512x512" href={site.icons.large} />
+    <link rel="apple-touch-icon" sizes="180x180" href={site.icons.apple} />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="alternate" type="application/rss+xml" title={`${site.name} — ${locale.toUpperCase()}`} href={`/${locale}/rss.xml`} />
     <script type="application/ld+json" set:html={JSON.stringify(schema).replace(/</g, "\\u003c")} />
