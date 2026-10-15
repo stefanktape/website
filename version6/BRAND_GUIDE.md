@@ -1,6 +1,6 @@
 # SV Solutions brand implementation
 
-The primary visual reference is the **branding.png brand sheet supplied with this task**: blue/navy geometric logo previews, contrasting light/dark applications, restrained orange accents, tracked SOLUTIONS lettering and sans-serif typography. The website applies this palette and hierarchy in a typographic, editorial layout; it does not use the sheet's mock buildings, factory image or business-card artwork as evidence of the business.
+The primary visual reference is the supplied **SV Solutions Brand Kit**, specifically `references/full-brand-board.png` and `tokens/brand-tokens.json`: blue/navy geometric logo previews, contrasting light/dark applications, restrained orange accents, tracked SOLUTIONS lettering and sans-serif typography. The website applies this palette and hierarchy in a dark technical hero with light editorial sections; it does not use the sheet's mock buildings, factory image or business-card artwork as evidence of the business.
 
 ## Palette
 
@@ -20,26 +20,29 @@ The darker action blue preserves readable contrast where primary blue is too lig
 
 ## Typography and layout
 
-Inter Variable is bundled through `@fontsource-variable/inter`, served from the site itself. Chinese falls back to PingFang SC, Microsoft YaHei and the system sans-serif. No font CDN or external font request is used. Body copy is regular; headings use semibold weights. The temporary wordmark uses heavy italic SV with tracked regular SOLUTIONS, following the hierarchy in the reference without reproducing its symbol.
+Inter Variable is bundled through `@fontsource-variable/inter`, served from the site itself. Chinese falls back to PingFang SC, Microsoft YaHei and the system sans-serif. No font CDN or external font request is used. Body copy is regular; headings use semibold weights. The supplied raster lockup carries the bold SV and tracked SOLUTIONS lettering. A typographic fallback remains available only when the configured image path is empty.
 
-Use the shared maximum-width container, generous section spacing, small uppercase technical labels and thin grid dividers. Most backgrounds are white or near-white. Reserve navy for focused panels and the contact CTA. Use gradients sparingly; the research panel uses only a subtle navy shift. Avoid decorative shadows, blur, glass effects, elaborate animations and stock imagery.
+Use the shared maximum-width container, generous section spacing, small uppercase technical labels and thin grid dividers. Content sections remain white or near-white. The hero, contact CTA and footer use navy; the header remains white. Use gradients sparingly: the hero and research panel use subtle navy shifts. Avoid decorative shadows, blur, glass effects, elaborate animations and stock imagery.
 
-## Original logo assets
+## Supplied logo and icon assets
 
-No standalone original logo export was available in the repository or attachments. The supplied brand sheet is a visual reference, not a production logo asset. The previous personal symbol was removed. **Do not trace, redraw or crop the geometric SV symbol from the screenshot.**
+`public/brand/logos/` and `public/brand/icons/` contain selected PNGs copied unchanged from the supplied kit. The kit was extracted from a flattened raster board; these are **not original vector masters**. The white lockup is a recolored derivative. Inspection on white and navy confirmed that low-opacity extraction texture remains, particularly around the white version. At normal header/footer size it is faint, but these PNGs are temporary web assets rather than print-ready artwork. Replace them with genuine designer-supplied vectors when available; do not trace or redraw the symbol.
 
-When original exports are available, place them at:
-
-| Asset | Location | Configuration |
+| Asset | Location under `public/brand/` | Configuration / use |
 | --- | --- | --- |
-| Full-color logo for white backgrounds | `public/brand/sv-solutions-light.svg` | `site.logo.light` |
-| White/blue logo for navy backgrounds | `public/brand/sv-solutions-dark.svg` | `site.logo.dark` |
-| Approved favicon | `public/brand/favicon.svg` | `site.favicon` |
-| Approved social image, 1200 × 630 | `public/brand/social-card.png` | `site.socialImage` |
+| Primary transparent lockup | `logos/logo-primary-raster-transparent.png` | `site.logo.light`: white header |
+| White transparent lockup | `logos/logo-white-raster-transparent.png` | `site.logo.dark`: navy footer |
+| Primary / white monograms | `logos/monogram-primary-raster-transparent.png`, `logos/monogram-white-raster-transparent.png` | Available for future tight layouts; full accessible lockups are used now |
+| Favicons | `icons/favicon-32.png`, `icons/favicon-48.png` | `site.icons.small`, `site.favicon` |
+| Apple touch icon | `icons/favicon-180.png` | `site.icons.apple` |
+| Larger icons | `icons/favicon-256.png`, `icons/favicon-512.png` | `site.icons.medium`, `site.icons.large` |
+| Social image, 1200 × 630 | `social-card.png` | `site.socialImage` |
 
-Configure their browser paths in `src/data/site.ts`, for example `logo.light: "/brand/sv-solutions-light.svg"` within the existing object. PNG exports are also supported. Keep a transparent background, preserve the original proportions and leave clear space around the logo. Light surfaces use `logo.light`; any future dark-background `Brand` component should pass `dark` to use `logo.dark`. Empty values intentionally show the clean typographic wordmark.
+`light` and `dark` describe the **background**, not the artwork color. `Brand.astro` uses the primary lockup by default and the white lockup when passed `dark`; the footer explicitly passes it. Both supplied lockups measure 548 × 224. Those natural dimensions are set in `site.logo.width` / `.height`, while CSS scales to 176px wide on desktop and 144px on smaller screens with `height: auto`. Do not force them into a 220 × 60 rectangle. The header supplies vertical clear space, and the footer supplies generous padding. Keep at least 12px of clear space around these display sizes.
 
-The current favicon is a temporary text-only “SV” on navy. The current social image is also typographic, not a substitute geometric logo. Its editable source is `public/brand/social-card.svg`; after editing, export it as the 1200 × 630 PNG used by social metadata. Keep both files in sync. Replace these with approved brand assets when supplied.
+To replace a logo, copy the approved file into `public/brand/logos/`, update its browser path in `src/data/site.ts`, and update the natural width/height if its aspect ratio differs. If future variants have different proportions, give each its own dimensions in the component rather than stretching either one. Always inspect the replacement on both surface colors and at mobile width. Preserve the `alt` text and accessible Home link.
+
+No mockup or reference-board image is shipped as page photography. The current social-card source is `public/brand/social-card.svg`; it embeds the supplied white raster lockup and is not a vector master of the mark. Re-export at 1200 × 630 after changing it, keeping `social-card.png` in sync.
 
 ## Technical imagery
 

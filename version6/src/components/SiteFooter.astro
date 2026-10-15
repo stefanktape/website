@@ -10,7 +10,7 @@ const t = ui[locale];
 ---
 <footer class="site-footer">
   <div class="container footer-top">
-    <div><a class="brand" href={pagePath(locale, "home")} aria-label={`${site.name} — ${t.nav.home}`}><Brand /></a><p>{t.footer.line}</p></div>
+    <div><a class="brand" href={pagePath(locale, "home")} aria-label={`${site.name} — ${t.nav.home}`}><Brand dark /></a><p>{t.footer.line}</p></div>
     <nav aria-label={t.nav.footer}>{(["home", "insights", "about", "contact"] as const).map(page => <a href={pagePath(locale, page)}>{t.nav[page]}</a>)}</nav>
     <a class="footer-email" href={`mailto:${site.email}`}>{t.actions.email}<Arrow direction="up-right" /></a>
   </div>

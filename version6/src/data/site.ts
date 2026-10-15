@@ -8,8 +8,19 @@ export const site = {
     linkedin: "https://www.linkedin.com/in/stepankalashnikov/"
   },
   portrait: "",
-  // Add the original exported assets here; never reconstruct the symbol.
-  logo: { light: "", dark: "" },
-  favicon: "/brand/favicon.svg",
+  // Supplied raster extractions; light/dark describe the surrounding surface.
+  logo: {
+    light: "/brand/logos/logo-primary-raster-transparent.png",
+    dark: "/brand/logos/logo-white-raster-transparent.png",
+    width: 548,
+    height: 224
+  },
+  favicon: "/brand/icons/favicon-48.png",
+  icons: {
+    small: "/brand/icons/favicon-32.png",
+    apple: "/brand/icons/favicon-180.png",
+    medium: "/brand/icons/favicon-256.png",
+    large: "/brand/icons/favicon-512.png"
+  },
   socialImage: "/brand/social-card.png"
 } as const;
