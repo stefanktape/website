@@ -1,41 +1,53 @@
 ---
+import Brand from "./Brand.astro";
 import { localeNames, locales, type Locale } from "../i18n/config";
 import { ui } from "../i18n/ui";
-import { assetPath, pagePath, type PageKey } from "../i18n/paths";
+import { pagePath, type PageKey } from "../i18n/paths";
 import { site } from "@data/site";
-
-interface Props { locale: Locale; page: PageKey; translations?: Partial<Record<Locale, string>>; }
-const { locale, page, translations = {} } = Astro.props;
+interface Props { locale: Locale; page?: PageKey; translations?: Partial<Record<Locale, string>>; article?: boolean; }
+const { locale, page, translations = {}, article = false } = Astro.props;
 const t = ui[locale];
-const other = locales.find((item) => item !== locale)!;
-const alternateSlug = translations[other];
-const switchHref = page === "insights" && Astro.params.slug
-  ? alternateSlug ? pagePath(other, "insights", alternateSlug) : pagePath(other, "insights")
-  : pagePath(other, page);
-const unavailable = Boolean(page === "insights" && Astro.params.slug && !alternateSlug);
-const nav = [
-  ["home", t.nav.home], ["insights", t.nav.insights], ["about", t.nav.about], ["contact", t.nav.contact]
-] as const;
+const nav = ["home", "insights", "about", "contact"] as const;
 ---
-<header class="site-header">
-  <div class="header-inner">
-    <a class="brand" href={pagePath(locale, "home")} aria-label={`${site.name} — ${t.nav.home}`}>
-      <img src={assetPath("/logo.svg")} alt="" width="34" height="34" />
-      <span><strong>{site.name}</strong><small>{locale === "zh" ? site.chineseName : "Materials & Surface Engineering"}</small></span>
-    </a>
-    <button class="menu-button" type="button" aria-expanded="false" aria-controls="site-menu" data-menu-button><span class="sr-only">{t.nav.open}</span><span></span><span></span></button>
+<header class="site-header" data-header>
+  <div class="header-inner container">
+    <a class="brand" href={pagePath(locale, "home")} aria-label={`${site.name} — ${t.nav.home}`}><Brand /></a>
+    <button class="menu-button" type="button" aria-expanded="false" aria-controls="site-menu" aria-label={t.nav.open} data-open={t.nav.open} data-close={t.nav.close} data-menu-button hidden>
+      <span class="menu-label">{t.nav.menu}</span><span class="menu-lines" aria-hidden="true"><span></span><span></span></span>
+    </button>
     <div class="site-menu" id="site-menu" data-menu>
-      <nav aria-label={t.nav.open}>{nav.map(([key, label]) => <a href={pagePath(locale, key)} aria-current={page === key ? "page" : undefined}>{label}</a>)}</nav>
-      <a class="language-link" href={switchHref} lang={other} hreflang={other} title={unavailable ? t.insights.unavailable : undefined}>{localeNames[other]}{unavailable && <span aria-hidden="true"> *</span>}</a>
+      <nav aria-label={t.nav.primary}>{nav.map(key => <a class:list={["nav-link", { "nav-contact": key === "contact" }]} href={pagePath(locale, key)} aria-current={page === key ? "page" : undefined}>{t.nav[key]}</a>)}</nav>
+      <div class="language-switch" role="group" aria-label={t.nav.language}>
+        {locales.map(lang => <a href={article ? pagePath(lang, "insights", translations[lang] || undefined) : pagePath(lang, page ?? "home")} lang={lang} hreflang={lang} aria-current={locale === lang ? "true" : undefined} title={article && !translations[lang] ? t.insights.unavailable : undefined}>{localeNames[lang]}</a>)}
+      </div>
     </div>
   </div>
 </header>
 <script>
-  const button = document.querySelector<HTMLButtonElement>("[data-menu-button]");
-  const menu = document.querySelector<HTMLElement>("[data-menu]");
-  button?.addEventListener("click", () => {
-    const open = button.getAttribute("aria-expanded") === "true";
-    button.setAttribute("aria-expanded", String(!open));
-    menu?.classList.toggle("is-open", !open);
-  });
+  const header = document.querySelector<HTMLElement>("[data-header]");
+  const button = header?.querySelector<HTMLButtonElement>("[data-menu-button]");
+  const menu = header?.querySelector<HTMLElement>("[data-menu]");
+  if (button && menu && header) {
+    button.hidden = false;
+    header.classList.add("has-menu-js");
+    const setOpen = (open: boolean) => {
+      button.setAttribute("aria-expanded", String(open));
+      button.setAttribute("aria-label", (open ? button.dataset.close : button.dataset.open) ?? "Menu");
+      menu.classList.toggle("is-open", open);
+    };
+    button.addEventListener("click", () => setOpen(button.getAttribute("aria-expanded") !== "true"));
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape" && button.getAttribute("aria-expanded") === "true") {
+        setOpen(false); button.focus();
+      }
+    });
+    document.addEventListener("click", event => {
+      if (event.target instanceof Node && !header.contains(event.target)) setOpen(false);
+    });
+    header.addEventListener("focusout", () => {
+      requestAnimationFrame(() => { if (!header.contains(document.activeElement)) setOpen(false); });
+    });
+    menu.querySelectorAll("a").forEach(link => link.addEventListener("click", () => setOpen(false)));
+    matchMedia("(min-width: 861px)").addEventListener("change", () => setOpen(false));
+  }
 </script>

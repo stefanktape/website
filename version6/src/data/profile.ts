@@ -2,6 +2,17 @@ import type { Locale } from "../i18n/config";
 
 export const profile = {
   en: {
+    title: "Research-led.\nMaterials-focused.",
+    intro: "SV Solutions is an early-stage materials and surface-engineering brand founded by Stepan Kalashnikov, a materials researcher based in Shanghai. The work connects ceramic feedstocks, spray behaviour and particle structure.",
+    founderName: "Stepan Kalashnikov",
+    founderRole: "Founder · Materials researcher",
+    focus: [
+      "Porous ceramic microspheres and precursor feedstocks for thermal-barrier-coating-related applications.",
+      "Electrostatic and air-assisted spraying; high-speed imaging of spraying regimes and cone-jet stability.",
+      "Relationships between slurry properties, spray behaviour and particle microstructure.",
+      "Particle morphology, size distribution, pore structure and cross-section characterization."
+    ],
+    future: "Planning to continue into doctoral research focused on thermal spray and surface engineering.",
     education: [
       { period: "2024–2027", place: "Shanghai Jiao Tong University", role: "Master's in Materials Science and Engineering", detail: "Shanghai Key Laboratory of Advanced High-temperature Materials and Precision Forming" },
       { period: "2019–2024", place: "Novosibirsk State University", role: "Fundamental and Applied Chemistry / Organic Chemistry", detail: "State scholarship; best graduation defence" }
@@ -17,6 +28,17 @@ export const profile = {
     languages: ["Russian", "English", "Chinese"]
   },
   zh: {
+    title: "立足材料，\n以研究为基础。",
+    intro: "SV Solutions 是由常驻上海的材料研究者 Stepan Kalashnikov（思凡）创立的早期材料与表面工程品牌，工作聚焦陶瓷原料、喷雾行为与颗粒结构之间的联系。",
+    founderName: "Stepan Kalashnikov（思凡）",
+    founderRole: "创始人 · 材料研究者",
+    focus: [
+      "面向热障涂层相关应用的多孔陶瓷微球与前驱体原料。",
+      "静电与气辅喷雾；利用高速成像分析喷雾模式和锥射流稳定性。",
+      "浆料性质、喷雾行为与颗粒微结构之间的关系。",
+      "颗粒形貌、粒径分布、孔结构与截面表征。"
+    ],
+    future: "计划继续攻读博士学位，研究方向聚焦热喷涂与表面工程。",
     education: [
       { period: "2024–2027", place: "上海交通大学", role: "材料科学与工程硕士", detail: "上海市先进高温材料及其精密成形重点实验室" },
       { period: "2019–2024", place: "新西伯利亚国立大学", role: "基础与应用化学 / 有机化学", detail: "国家奖学金；优秀毕业答辩" }

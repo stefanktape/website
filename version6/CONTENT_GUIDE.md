@@ -1,163 +1,168 @@
-# Content guide — version 6
+# Editing and publishing
 
-This site is intentionally file-based. You do not need a CMS: edit the files below, save them, and rebuild the site. Text files use UTF-8, so Chinese can be entered directly.
+Run all commands from `version6/`. Edit UTF-8 source files, not the generated `dist/` folder. English and Chinese text are maintained independently; the site does not automatically translate them.
 
-## 1. Name, email, social links, location, and portrait
+## 1. Homepage text
 
-Edit `src/data/site.ts`. Keep the quotes around text. The contact form uses the `email` value. Add a public LinkedIn URL only when you want it shown. The site does **not** publish a phone number.
+Edit `src/data/home.ts`. The `en` and `zh` objects contain the hero, four capability cards, founder preview and contact CTA. Keep the existing quotes, commas and braces. Use `\n` inside a quoted title to request a line break. UI labels and page metadata are in `src/i18n/ui.ts`.
 
-The supplied portrait was visible in the project brief but was not available as a filesystem file, so it was not copied or reconstructed. To add it:
+## 2. About and profile
 
-1. Save the original as `public/images/stepan-kalashnikov.jpg`.
-2. In `src/data/site.ts`, change `portrait: ""` to `portrait: "/images/stepan-kalashnikov.jpg"`.
+Edit `src/data/profile.ts`: introduction, research focus, education, experience, publication, tools, languages and future direction. Edit the homepage founder preview separately in `src/data/home.ts` if its summary also needs changing. Keep dates and technical claims factual.
 
-It will appear at a 4:5 crop on the home page. Keep the original safely outside the website too.
+An optional real portrait can be placed at `public/images/stepan-kalashnikov.jpg`. Set `portrait: "/images/stepan-kalashnikov.jpg"` in `src/data/site.ts`. Leave it empty to show no image or placeholder.
 
-## 2. Homepage text and competence areas
+## 3. Email and social links
 
-Edit `src/i18n/ui.ts`:
+Edit `email` and `social.linkedin` in `src/data/site.ts`. This updates the direct links and form recipient together. The existing Gmail address is retained until you provide another valid mailbox. Set the LinkedIn value to `""` to hide it. Contact-page paragraphs are in `src/data/contact.ts`.
 
-- English homepage: the `en` object (`hero`, `competence`, `homeAbout`, and `cta`).
-- Chinese homepage: the `zh` object with the same keys.
-- The four competence areas are in `competence.items`. Edit the title and text, but keep the array structure.
+## 4. Add an English Insight
 
-## 3. About content
+```bash
+npm run new:insight -- --lang en --slug ceramic-feedstock-note
+```
 
-Short headings, research focus, and future direction are in `src/i18n/ui.ts` under `about`. Education, experience, publication, tools, and languages are in `src/data/profile.ts`, separated into `en` and `zh`. Update each language independently; no text is translated at runtime.
+Open `src/content/insights/en/ceramic-feedstock-note.md`, replace every TODO and review the draft. Alternatively create a `.md` file manually:
 
-## 4. English and Chinese Insights
+```yaml
+---
+title: "Your reviewed technical title"
+slug: ceramic-feedstock-note
+locale: en
+publishedAt: 2026-10-15
+summary: "A short, factual description of the question and scope."
+type: research-note
+tags: [ceramics, feedstocks]
+featured: false
+draft: true
+---
+```
 
-- English: `src/content/insights/en/`
-- Chinese: `src/content/insights/zh/`
+Below the second `---`, write the article using Markdown headings, paragraphs and lists. Leave `draft: true` until you are ready to publish. The example is documentation only, not a published article.
 
-Each Insight is a Markdown (`.md`) file. The filename can match the slug, for example `electrostatic-spray-regimes.md`. Everything below the second `---` is the article body and supports headings, lists, tables, blockquotes, images, and code blocks.
+## 5. Add a Chinese Insight
 
-## 5. Add an English Insight
+```bash
+npm run new:insight -- --lang zh --slug taoci-yuanliao
+```
 
-Create `src/content/insights/en/your-slug.md`. Copy the documentation-only example below. Set `locale: en`, use a unique lowercase hyphenated `slug`, write the body, and leave `draft: true` until it is ready.
+Edit the generated file in `src/content/insights/zh/`. Set `locale: zh` and write the title, summary and body in Chinese. Use a lowercase Latin slug for a predictable URL; the title can contain Chinese. A Chinese article does not need an English counterpart.
 
-## 6. Add a Chinese Insight
+## 6. Connect translations
 
-Create `src/content/insights/zh/your-chinese-slug.md`. Set `locale: zh`. The English and Chinese slugs may differ. Chinese content is edited independently and does not need an English counterpart.
-
-## 7. Connect English and Chinese translations
-
-Add the counterpart's slug under `translations` in **both** files:
+Use the other article's frontmatter `slug`, not its filename or full URL. Add this to the English frontmatter:
 
 ```yaml
 translations:
-  zh: chinese-article-slug
+  zh: taoci-yuanliao
 ```
 
-In the Chinese file, use:
+Add the reverse link to the Chinese frontmatter:
 
 ```yaml
 translations:
-  en: english-article-slug
+  en: ceramic-feedstock-note
 ```
 
-If no counterpart exists, omit that key. The language switcher will safely go to the other language's Insights index and indicate that the article translation is unavailable.
+Both published articles must link to each other; the build reports nonreciprocal links. A missing or draft counterpart is omitted from SEO alternates, and the switcher safely opens that language's Insights index. Remove a translation link if the counterpart has been permanently deleted.
 
-## 8. Publish or unpublish
+## 7. Images, figures, tables and code
 
-- `draft: true` — excluded from lists, the homepage, and generated article URLs.
-- `draft: false` — publicly generated.
-- `featured: true` — eligible for the homepage. The homepage shows up to four featured, published items, newest first.
+Put real, approved images in `public/images/insights/`. Keep filenames lowercase and compress images. Never add an unpublished industrial result or an image without permission.
 
-Always run `npm run build` before publishing; an invalid date, type, or frontmatter field will stop the build and point to the problem.
-
-## 9. Insight images
-
-Put public images in `public/images/insights/`. Use clear filenames, compress large photos, and only publish images you are allowed to use. In Markdown:
-
-```md
-![Meaningful description of the image](/images/insights/file-name.jpg)
-```
-
-The deployment helper automatically prefixes featured-image paths. For ordinary Markdown body images, use the deployed base path when publishing on GitHub Pages (`/website-coat/images/insights/file-name.jpg`), or use a relative URL such as `../../../images/insights/file-name.jpg` if you need the same source to work under different bases.
-
-## 10. Featured visual
-
-It is optional. Omit `featuredVisual` to show no placeholder.
-
-For a real image:
+For an optional article hero, add:
 
 ```yaml
 featuredVisual:
   kind: image
-  src: /images/insights/file-name.jpg
-  alt: Precise description for screen-reader users
-  caption: Optional factual caption
-  credit: Optional photographer or source credit
+  src: /images/insights/particle-section.jpg
+  alt: "Describe what the actual image shows."
+  caption: "Figure 1. Describe the specimen and imaging conditions."
+  credit: "Image credit, if applicable."
 ```
 
-For a CSS summary card suitable for a screenshot:
+The file must actually exist. Do not copy this path unchanged unless you have supplied the image. Ordinary images in the body use the same domain-root path:
 
-```yaml
-featuredVisual:
-  kind: summary-card
-  alt: Summary card describing the article
-  caption: Optional caption
+```md
+![A description of the actual figure](/images/insights/particle-section.jpg)
 ```
 
-The summary card uses only the title, summary, tags, and optional caption already supplied in frontmatter.
+For a caption, use HTML inside Markdown (or MDX):
 
-## 11. Add Russian later
+```html
+<figure>
+  <img src="/images/insights/particle-section.jpg" alt="Describe the actual image" loading="lazy" width="1200" height="800" />
+  <figcaption>Figure 1. Conditions, scale and source.</figcaption>
+</figure>
+```
 
-1. Add `"ru"` to `locales` and its display name in `src/i18n/config.ts`.
-2. Add a complete `ru` translation object in `src/i18n/ui.ts`.
-3. Add a `ru` profile in `src/data/profile.ts`.
-4. Add `ru` to the content schema's locale enum in `src/content.config.ts`.
-5. Create `src/content/insights/ru/` and add `ru?: string` to `translations` in the schema.
+Use the image's real width and height. Equations can also be supplied as accessible images with a meaningful text alternative. Technical tables and code blocks scroll within the reading column on small screens:
 
-The same dynamic page tree will generate Russian routes; do not create a separate `src/pages/ru/` directory.
+````md
+| Parameter | Value | Method |
+| --- | --- | --- |
+| Your parameter | Your measured value | Your method |
 
-## 12. Run locally
+```python
+# Your reproducible analysis
+```
 
-From the `version6` directory:
+## References
+
+1. Author, publication, year. [DOI](https://doi.org/your-doi)
+````
+
+These are writing patterns, not technical data. Replace them with real reviewed material. `.mdx` is supported for articles requiring Astro/MDX components; use `.md` for normal writing. Do not paste untrusted JavaScript into MDX.
+
+## 8. Drafts, featured posts and dates
+
+- `draft: true`: excluded from pages, lists, RSS and sitemap. Use your editor to review it; the website does not expose a draft URL.
+- `draft: false`: included in the next build. Publishing is controlled by this flag, not the date; future dates do not schedule publication.
+- `featured: true`: preferred on the homepage. Up to three articles are shown, featured first and newest first within each group. Remaining places use recent published articles.
+- `publishedAt: YYYY-MM-DD`: original publication date; required.
+- `updatedAt: YYYY-MM-DD`: optional revision date, displayed on the article; cannot precede publication.
+
+Supported `type` values: `research-note`, `technical-note`, `industry-note`, `event-note`, `project-update`, `guide`. Older `exhibition` and `supplier-note` values remain accepted. Types and dates are displayed with localized labels. Tags do not create extra pages.
+
+## 9. Post helper
 
 ```bash
-npm install
+npm run new:insight -- --lang en --slug my-title
+npm run new:insight -- --lang zh --slug my-chinese-title
+npm run new:insight -- --help
+```
+
+The helper creates a draft only. It validates the language and slug and refuses to overwrite a file. Slugs must use lowercase letters, numbers and single hyphens. Each language must have unique slugs, even across `.md` and `.mdx` files.
+
+## 10. Preview
+
+```bash
+npm ci
 npm run dev
 ```
 
-Astro prints the local URL. Because production uses the `/website-coat` base path, open the URL Astro reports with that path.
+Use `/en/` or `/zh/` on the address Astro prints. Save a file to update the development page. Check the terminal if a page reports an error. To view the actual production output, run `npm run build` followed by `npm run preview`.
 
-## 13. Build
+## 11. Build before publishing
 
 ```bash
+npm run check
+npm test
 npm run build
 ```
 
-The static result is written to `dist/`. To deploy at a custom domain root later, set `base: "/"` and update `site` in `astro.config.mjs`.
+Fix errors before uploading `dist/`. Empty-content warnings are expected until the first article is added. RSS feeds at `/en/rss.xml` and `/zh/rss.xml` and the sitemap are generated automatically.
 
-## Documentation-only example (not published)
+## 12. Common mistakes
 
-This block is intentionally only in this guide. It does not generate a public article.
+- Missing the closing frontmatter `---`, a quote or a YAML indentation level.
+- Forgetting to change `draft: true` after final review.
+- Putting a `zh` article in the `en` folder, or reusing a slug in one language.
+- Using an invalid content type or a revision date before publication.
+- Linking translations in only one direction.
+- Writing `public/images/...` in a URL: the browser path starts with `/images/...`.
+- Referring to an image that has not been committed or uploaded.
+- Adding private collaboration details, personal contact data not intended for publication, or claims unsupported by evidence.
+- Editing `dist/`: the next build replaces it.
 
-```md
----
-title: "A precise, factual title"
-slug: "a-precise-factual-slug"
-locale: "en"
-publishedAt: 2026-09-25
-updatedAt: 2026-09-26
-summary: "One or two sentences explaining exactly what the reader will learn."
-type: "research-note"
-tags: ["YSZ", "feedstocks"]
-featured: false
-draft: true
-translations:
-  zh: "counterpart-chinese-slug"
-featuredVisual:
-  kind: "summary-card"
-  alt: "Summary card for this research note"
-  caption: "Optional factual caption"
----
-
-## First section
-
-Write the independently edited article here.
-```
-
-Allowed types are `research-note`, `technical-note`, `exhibition`, `supplier-note`, and `guide`.
+See [DEPLOYMENT.md](DEPLOYMENT.md) for the final hosting steps.
